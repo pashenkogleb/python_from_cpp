@@ -1,4 +1,6 @@
 import numpy as np
+
+
 def f(x):
     '''
     very simple function
@@ -11,3 +13,5 @@ def array_func(x):
 def array_func2(x):
     return float(np.sum(x))
 
+def array_func_multi_argument(x,y):
+    return np.sum(x*y)

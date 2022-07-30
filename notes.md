@@ -13,10 +13,12 @@ https://docs.python.org/3/reference/datamodel.html#types
 
 ### Creating python objects from c++ objects:
 
-**to do**
+https://docs.python.org/3/c-api/arg.html#building-values
+
+I think I can just Py_BuildValue to convert c objects to python objects
 
 ```
-Py_BuildValue("i", 1); // what python type does it create? 
+Py_BuildValue("i", 3); 
 ```
 
 
