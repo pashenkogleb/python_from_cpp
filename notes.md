@@ -11,6 +11,20 @@ To create tuple use PyTuple_Pack
 ## Python types
 https://docs.python.org/3/reference/datamodel.html#types
 
+### Creating python objects from c++ objects:
+
+**to do**
+
+```
+Py_BuildValue("i", 1); // what python type does it create? 
+```
+
+
+
+**Have to Py_DECREF(obj) after I am done with these** 
+
+
+
 **Have to be very careful with types**. For example: 
 ```
 PyObject_CallFunction(func, "d", 2); # WRONG 
