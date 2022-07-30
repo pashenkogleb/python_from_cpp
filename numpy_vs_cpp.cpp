@@ -1,17 +1,38 @@
 #include "py_util.hpp"
-
+#include "time_profiler.hpp"
+#include "random.hpp"
 
 int main(){
     Py_Initialize();
     import_array();
 
-        
+    PyObject * module = gutil::import_module("mytest");
+    PyObject * func = gutil::get_attr(module, "array_func2");
 
-    #ifdef USE_NUMPY
+    int size = 10000000;
+    std::vector<double> vec = gutil::NormalVec(size);
 
-    #else
+    gutil::TimeProfile profiler;
 
-    #endif
+
+
+    profiler.Start("c++");
+
+    double sum =0;
+    for (double x: vec){
+        sum+=x;
+    }
+    std::cout << sum << std::endl;
+
+    profiler.Start("python");
+    PyObject * np_array = gutil::np_array(vec.data(), vec.size());
+    PyObject * res = gutil::call_function(func, np_array);
+    gutil::PrintObject(res) << std::endl;
+
+
+    profiler.End();
+    profiler.Result();
+
 
     return 0;
 }

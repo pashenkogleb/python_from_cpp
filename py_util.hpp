@@ -20,10 +20,10 @@ PyObject * import_module(const std::string & name){
     return module;
 }
 
-PyObject * func_from_module(PyObject * module, const std::string & name){
+PyObject * get_attr(PyObject * module, const std::string & name){
     PyObject * func = PyObject_GetAttrString(module,name.c_str());
     if (!func){
-        throw std::runtime_error("could not load function");
+        throw std::runtime_error("could not load attribute");
     }
     return func;
 }
@@ -35,10 +35,12 @@ PyObject * call_function(PyObject * func, PyObject * arg){
     return PyObject_CallFunctionObjArgs(func,arg, NULL);
 }
 
-void PrintObject(PyObject * obj){
+std::ostream & PrintObject(PyObject * obj, std::ostream & out = std::cout){
     PyObject* objectsRepresentation = PyObject_Repr(obj);
     const char * res = PyUnicode_AsUTF8(objectsRepresentation);
-    std::cout << res << std::endl;
+    out << res;
+    return  out;
+
 }
 
 
@@ -54,6 +56,11 @@ struct np_typenum<float>{
 template <>
 struct np_typenum<int>{
     static const int value = NPY_INT32;
+};
+
+template <>
+struct np_typenum<double>{
+    static const int value = NPY_FLOAT64;
 };
 
 

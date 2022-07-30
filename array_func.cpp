@@ -14,8 +14,8 @@ int main(){
     import_array();
     PyObject * module = gutil::import_module("mytest");
 
-    PyObject * array_func = gutil::func_from_module(module, "array_func");
-    PyObject * array_func2 = gutil::func_from_module(module, "array_func2");
+    PyObject * array_func = gutil::get_attr(module, "array_func");
+    PyObject * array_func2 = gutil::get_attr(module, "array_func2");
 
     std::vector<float> x=  {1,2,4};
 

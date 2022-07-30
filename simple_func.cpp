@@ -10,7 +10,7 @@ int main(){
     
 
     PyObject * module = gutil::import_module("mytest");
-    PyObject * func = gutil::func_from_module(module, "f");
+    PyObject * func = gutil::get_attr(module, "f");
 
     PyObject * python_res = PyObject_CallFunction(func, "d", 2.6); 
 

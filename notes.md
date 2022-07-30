@@ -32,3 +32,6 @@ I think that PyArray_SimpleNewFromData does not own data by default
 - NPY_INT64
 - NPY_FLOAT64
 
+## Efficiency
+example numpy_vs_cpp shows that python is faster even with -O3 !!
+

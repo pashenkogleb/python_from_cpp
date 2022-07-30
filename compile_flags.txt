@@ -1,1 +1,2 @@
 -I/usr/include/python3.8
+-I/home/gpashchenko/projects/my_cpp_lib

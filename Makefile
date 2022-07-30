@@ -1,19 +1,14 @@
-CXXFLAGS=-I/usr/include/python3.8 -Wall -std=c++11
+CXXFLAGS=-I/usr/include/python3.8 -I/home/gpashchenko/projects/my_cpp_lib -Wall -std=c++11 -O3
 CC=g++
 LDLIBS = -lpython3.8
 
 TARGETS = simple_func 
 
 
-
-array_func: array_func.o
-
-simple_func: simple_func.o
+run: numpy_vs_cpp
+	./numpy_vs_cpp
 
 
-
-run: array_func
-	./array_func
 
 clean:
-	rm *.o
+	rm -f *.o
