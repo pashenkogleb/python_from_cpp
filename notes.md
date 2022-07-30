@@ -8,6 +8,9 @@ To call functions have to either pass a tuple of arguments with PyObject_Call() 
 
 To create tuple use PyTuple_Pack
 
+## Python types
+https://docs.python.org/3/reference/datamodel.html#types
+
 **Have to be very careful with types**. For example: 
 ```
 PyObject_CallFunction(func, "d", 2); # WRONG 
