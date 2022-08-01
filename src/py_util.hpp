@@ -2,11 +2,14 @@
 
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
+#include "convert_from_python.hpp"
+#include "numpy_python.hpp"
+
+
 #include <string>
 #include <stdexcept>
 
-#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
-#include "numpy/arrayobject.h"
+
 #include <iostream>
 #include "gutil/metaprogramming.hpp" // defined in my_cpp_lib
 
@@ -14,7 +17,7 @@
 namespace gutil{
 
 PyObject * import_module(const std::string & name){
-    PyObject * module = PyImport_ImportModule(name.c_str());
+    PyObject * module = PyImport_ImportModule(name.c_str()); // new reference
     if (!module){
         throw std::runtime_error("could not load module");
     }
@@ -22,7 +25,7 @@ PyObject * import_module(const std::string & name){
 }
 
 PyObject * get_attr(PyObject * module, const std::string & name){
-    PyObject * func = PyObject_GetAttrString(module,name.c_str());
+    PyObject * func = PyObject_GetAttrString(module,name.c_str()); // returns new reference
     if (!func){
         throw std::runtime_error("could not load attribute");
     }
@@ -31,61 +34,42 @@ PyObject * get_attr(PyObject * module, const std::string & name){
 
 
 void AddPath(const std::string & path){
-    PyObject *sys_path = PySys_GetObject("path");
+    PyObject *sys_path = PySys_GetObject("path"); // borrowed reference
     PyObject * py_path = Py_BuildValue("s",path.c_str() );
-    PyList_Append(sys_path, py_path);
+    int error= PyList_Append(sys_path, py_path);
+    Py_DecRef(py_path);
+    if (error == -1){
+        throw std::runtime_error("could not append to list");
+    }
 }
 
 
 template <typename... pyobjects>
 PyObject * call_function(PyObject * func, pyobjects... pyobjects_objs){
     static_assert(gutil::all_same<PyObject *, pyobjects...>::value, "can only pass PyObject *");
-    return PyObject_CallFunctionObjArgs(func,pyobjects_objs..., NULL);
+    if (!PyFunction_Check(func)) throw std::runtime_error("have to pass a function");
+    return PyObject_CallFunctionObjArgs(func,pyobjects_objs..., NULL); // new reference
 }
-
-
-
 
 
 
 
 
 std::ostream & PrintObject(PyObject * obj, std::ostream & out = std::cout){
-    PyObject* objectsRepresentation = PyObject_Repr(obj);
+    PyObject* objectsRepresentation = PyObject_Repr(obj); // new reference
     const char * res = PyUnicode_AsUTF8(objectsRepresentation);
+    Py_DecRef(objectsRepresentation);
     out << res;
     return  out;
 
 }
 
-
-
-template <typename T>
-struct np_typenum;
-
-template <>
-struct np_typenum<float>{
-    static const int value =  NPY_FLOAT32;
-};
-
-template <>
-struct np_typenum<int>{
-    static const int value = NPY_INT32;
-};
-
-template <>
-struct np_typenum<double>{
-    static const int value = NPY_FLOAT64;
-};
-
-
-template <typename T>
-PyObject * np_array(T * data, npy_intp size){
-    /*
-    creates 1D numpy array
-    */
-    PyObject * array = PyArray_SimpleNewFromData(1, &size, np_typenum<T>::value, data);
-    return array;
+std::ostream & PrintType(PyObject * obj, std::ostream & out = std::cout){
+    PyObject * type = PyObject_Type(obj); // new references
+    PrintObject(type, out);
+    Py_DecRef(type);
+    return out;
 }
+
 
 }

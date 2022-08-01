@@ -15,7 +15,17 @@ int main(){
     auto x_np = gutil::np_array(x.data(), x.size());
     auto y_np = gutil::np_array(y.data(), y.size());
 
-    gutil::PrintObject(gutil::call_function(func, x_np, y_np)) << std::endl;
+    PyObject * res = gutil::call_function(func, x_np, y_np);
+    gutil::PrintObject(res) << std::endl;
+    double res_c = gutil::convert_to_c<double>(res);
+
+    std::cout << res_c << std::endl;
+
+
+
+
+
+
 
     return 0;
 }

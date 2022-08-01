@@ -4,8 +4,8 @@ LDLIBS = -lpython3.8
 
 BUILDDIR = ../build
 OUTDIR = ../out
-deps = py_util.hpp
-TARGETS = array_func simple_func numpy_vs_cpp multiple_arguments #ADD TARGETS TO THIS LINE
+deps = py_util.hpp numpy_python.hpp convert_from_python.hpp
+TARGETS = array_func simple_func numpy_vs_cpp multiple_arguments string python_dict#ADD TARGETS TO THIS LINE
 
 _TARGETS = $(patsubst %, $(OUTDIR)/%.out, $(TARGETS))
 
