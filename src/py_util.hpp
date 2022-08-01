@@ -16,7 +16,7 @@
 
 namespace gutil{
 
-PyObject * import_module(const std::string & name){
+inline PyObject * import_module(const std::string & name){
     PyObject * module = PyImport_ImportModule(name.c_str()); // new reference
     if (!module){
         throw std::runtime_error("could not load module");
@@ -24,7 +24,7 @@ PyObject * import_module(const std::string & name){
     return module;
 }
 
-PyObject * get_attr(PyObject * module, const std::string & name){
+inline PyObject * get_attr(PyObject * module, const std::string & name){
     PyObject * func = PyObject_GetAttrString(module,name.c_str()); // returns new reference
     if (!func){
         throw std::runtime_error("could not load attribute");
@@ -33,7 +33,7 @@ PyObject * get_attr(PyObject * module, const std::string & name){
 }
 
 
-void AddPath(const std::string & path){
+inline void AddPath(const std::string & path){
     PyObject *sys_path = PySys_GetObject("path"); // borrowed reference
     PyObject * py_path = Py_BuildValue("s",path.c_str() );
     int error= PyList_Append(sys_path, py_path);
@@ -55,7 +55,7 @@ PyObject * call_function(PyObject * func, pyobjects... pyobjects_objs){
 
 
 
-std::ostream & PrintObject(PyObject * obj, std::ostream & out = std::cout){
+inline std::ostream & PrintObject(PyObject * obj, std::ostream & out = std::cout){
     PyObject* objectsRepresentation = PyObject_Repr(obj); // new reference
     const char * res = PyUnicode_AsUTF8(objectsRepresentation);
     Py_DecRef(objectsRepresentation);
@@ -64,7 +64,7 @@ std::ostream & PrintObject(PyObject * obj, std::ostream & out = std::cout){
 
 }
 
-std::ostream & PrintType(PyObject * obj, std::ostream & out = std::cout){
+inline std::ostream & PrintType(PyObject * obj, std::ostream & out = std::cout){
     PyObject * type = PyObject_Type(obj); // new references
     PrintObject(type, out);
     Py_DecRef(type);

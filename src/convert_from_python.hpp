@@ -9,21 +9,21 @@ namespace gutil{
     T convert_to_c(PyObject * obj);
 
     template<>
-    long convert_to_c(PyObject * obj){
+    inline long convert_to_c(PyObject * obj){
         if (!PyLong_Check(obj)) throw std::runtime_error("incorrect type (not long)");
         long res = PyLong_AsLong(obj);
         return res;
     }
 
     template <>
-    double convert_to_c(PyObject * obj){
+    inline double convert_to_c(PyObject * obj){
         if (!PyFloat_Check(obj)) throw std::runtime_error("incorrect type (not float)");
         double res = PyFloat_AsDouble (obj);
         if (PyErr_Occurred()) throw std::runtime_error("py error occured");
         return res;
     }
     template <>
-    std::string convert_to_c(PyObject * obj){
+    inline std::string convert_to_c(PyObject * obj){
         if (!PyUnicode_Check(obj)) throw std::runtime_error("incorrect type (not unicode)");
         const char * out = PyUnicode_AsUTF8(obj);
         if (!out) throw std::runtime_error ("null pointer");
@@ -33,7 +33,7 @@ namespace gutil{
     }
 
     template <>
-    std::unordered_map<std::string, double> convert_to_c(PyObject * obj){
+    inline std::unordered_map<std::string, double> convert_to_c(PyObject * obj){
         // convert python dictionary to unordered_map
         if (!PyDict_Check(obj)) throw std::runtime_error("incorrect type (not dictionary)");
         std::unordered_map<std::string, double> res;
