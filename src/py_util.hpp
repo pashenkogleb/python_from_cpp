@@ -29,6 +29,7 @@ inline PyObject * get_attr(PyObject * module, const std::string & name){
     if (!func){
         throw std::runtime_error("could not load attribute");
     }
+
     return func;
 }
 
@@ -48,7 +49,10 @@ template <typename... pyobjects>
 PyObject * call_function(PyObject * func, pyobjects... pyobjects_objs){
     static_assert(gutil::all_same<PyObject *, pyobjects...>::value, "can only pass PyObject *");
     if (!PyFunction_Check(func)) throw std::runtime_error("have to pass a function");
-    return PyObject_CallFunctionObjArgs(func,pyobjects_objs..., NULL); // new reference
+    PyObject * res = PyObject_CallFunctionObjArgs(func,pyobjects_objs..., NULL);
+    if (PyErr_Occurred()) throw std::runtime_error("error during function call");
+    if (!res) throw std::runtime_error("function did not return anything");
+    return res; // new reference
 }
 
 
